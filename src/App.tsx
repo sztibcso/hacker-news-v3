@@ -1,35 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { ThemeProvider } from './shared/contexts/ThemeContext';
+import { PageLayout } from './shared/components/PageLayout';
+import { HomePage } from './features/hn/pages/HomePage';
+import { NewsPage } from './features/hn/pages/NewsPage';
+import { TopPage } from './features/hn/pages/TopPage';
+import { SavedPage } from './features/hn/pages/SavedPage';
+import { SecretPage } from './features/hn/pages/SecretPage';
+import { ErrorBoundary } from './shared/components/ErrorBoundary';
+import { SavedProvider } from './shared/contexts/SavedContext';
 
-function App() {
-  const [count, setCount] = useState(0)
+function AppRoutes() {
+  const navigate = useNavigate();
+
+  const handleNavigateToSecret = () => {
+    navigate('/secret');
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      {/* Main pages with header/footer layout */}
+      <Route
+        path="/"
+        element={
+          <PageLayout onNavigateToSecret={handleNavigateToSecret}>
+            <HomePage />
+          </PageLayout>
+        }
+      />
+      <Route
+        path="/news"
+        element={
+          <PageLayout onNavigateToSecret={handleNavigateToSecret}>
+            <NewsPage />
+          </PageLayout>
+        }
+      />
+      <Route
+        path="/top"
+        element={
+          <PageLayout onNavigateToSecret={handleNavigateToSecret}>
+            <TopPage />
+          </PageLayout>
+        }
+      />
+      <Route
+        path="/saved"
+        element={
+          <PageLayout onNavigateToSecret={handleNavigateToSecret}>
+            <SavedPage />
+          </PageLayout>
+        }
+      />
+
+      {/* Secret page without header/footer */}
+      <Route path="/secret" element={<SecretPage />} />
+
+      {/* Fallback to home for unknown routes */}
+      <Route
+        path="*"
+        element={
+          <PageLayout onNavigateToSecret={handleNavigateToSecret}>
+            <HomePage />
+          </PageLayout>
+        }
+      />
+    </Routes>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <SavedProvider>
+      <ErrorBoundary>
+        <ThemeProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </ThemeProvider>
+      </ErrorBoundary>
+    </SavedProvider>
+  );
+}
+
+export default App;

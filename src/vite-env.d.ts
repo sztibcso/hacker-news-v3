@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="vitest/globals" />
 
 // CSS modulok támogatása
 declare module '*.css' {
