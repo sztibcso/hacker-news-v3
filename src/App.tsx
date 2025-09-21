@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-import { ThemeProvider } from './shared/contexts/ThemeContext';
 import { PageLayout } from './shared/components/PageLayout';
 import { HomePage } from './features/hn/pages/HomePage';
 import { NewsPage } from './features/hn/pages/NewsPage';
@@ -18,7 +17,6 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* Main pages with header/footer layout */}
       <Route
         path="/"
         element={
@@ -52,10 +50,8 @@ function AppRoutes() {
         }
       />
 
-      {/* Secret page without header/footer */}
       <Route path="/secret" element={<SecretPage />} />
 
-      {/* Fallback to home for unknown routes */}
       <Route
         path="*"
         element={
@@ -72,11 +68,9 @@ function App() {
   return (
     <SavedProvider>
       <ErrorBoundary>
-        <ThemeProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </ThemeProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
       </ErrorBoundary>
     </SavedProvider>
   );

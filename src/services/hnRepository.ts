@@ -16,7 +16,6 @@ export interface BatchOptions {
   concurrency?: number;
 }
 
-// Egyszerűbb concurrency limiter
 async function pLimit<T>(
   tasks: (() => Promise<T>)[],
   limit: number = 8

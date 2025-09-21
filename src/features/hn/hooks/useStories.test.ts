@@ -47,7 +47,6 @@ describe('useStories', () => {
     const initialCount = result.current.items.length;
     const hasMoreInitially = result.current.hasMore;
 
-    // Csak akkor próbálunk loadMore-t, ha van több
     if (hasMoreInitially) {
       await result.current.loadMore();
 
@@ -57,7 +56,6 @@ describe('useStories', () => {
 
       expect(result.current.items.length).toBeGreaterThan(initialCount);
     } else {
-      // Ha nincs több, akkor loadMore után ugyanannyi marad
       await result.current.loadMore();
       expect(result.current.items.length).toBe(initialCount);
     }

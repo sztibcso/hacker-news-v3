@@ -5,12 +5,11 @@ describe('HnRepository', () => {
     it('returns limited number of stories with metadata', async () => {
       const result = await getTopStories({ limit: 5 })
       
-      expect(result.items.length).toBeLessThanOrEqual(5) // Lehet kevesebb is
-      expect(result.items.length).toBeGreaterThan(0)     // De valaminek lennie kell
-      expect(result.hasMore).toBeDefined()               // Boolean érték
+      expect(result.items.length).toBeLessThanOrEqual(5)
+      expect(result.items.length).toBeGreaterThan(0)
+      expect(result.hasMore).toBeDefined()
       expect(result.total).toBeGreaterThan(0)
       
-      // Ha van item, akkor legyen megfelelő struktúrája
       if (result.items.length > 0) {
         expect(result.items[0]).toHaveProperty('title')
         expect(result.items[0]).toHaveProperty('score')
@@ -25,7 +24,6 @@ describe('HnRepository', () => {
       expect(first.items.length).toBeGreaterThan(0)
       expect(second.items.length).toBeGreaterThan(0)
       
-      // Ha mindkettőben van item, akkor különböznie kell
       if (first.items[0] && second.items[0]) {
         expect(first.items[0].id).not.toBe(second.items[0].id)
       }
@@ -34,7 +32,7 @@ describe('HnRepository', () => {
 
   describe('batchFetchItems', () => {
     it('fetches available items with concurrency limit', async () => {
-      const ids = [1, 8863] // Csak biztos létező ID-k
+      const ids = [1, 8863]
       const items = await batchFetchItems(ids, { concurrency: 2 })
       
       expect(items.length).toBeGreaterThan(0)
@@ -43,7 +41,7 @@ describe('HnRepository', () => {
     })
 
     it('filters out null/undefined items gracefully', async () => {
-      const ids = [1, 999999999, 8863] // Középen valószínűleg nem létező
+      const ids = [1, 999999999, 8863]
       const items = await batchFetchItems(ids)
       
       expect(items.length).toBeLessThanOrEqual(3)
@@ -59,11 +57,10 @@ describe('HnRepository', () => {
       expect(newStories.items.length).toBeGreaterThan(0)
       expect(newStories.total).toBeGreaterThan(0)
       
-      // Ha mindkettőben van story, valószínűleg különbözők lesznek
       if (topStories.items[0] && newStories.items[0]) {
         const topIds = topStories.items.map(item => item.id)
         const newIds = newStories.items.map(item => item.id)
-        expect(topIds[0]).not.toBe(newIds[0]) // Első elemek különböznek
+        expect(topIds[0]).not.toBe(newIds[0])
       }
     })
   })

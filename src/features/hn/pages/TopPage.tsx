@@ -11,8 +11,8 @@ export const TopPage: React.FC = () => {
         <div className="text-center text-red-600">
           <h2 className="text-2xl font-bold mb-4">Oops! Something went wrong</h2>
           <p>{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="mt-4 px-6 py-2 bg-hn-orange text-white rounded hover:bg-orange-600 transition-colors"
           >
             Try Again
@@ -23,28 +23,26 @@ export const TopPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          🔥 Top Stories
-        </h1>
-        <p className="text-gray-600">
-          The most popular and trending stories right now
-        </p>
-      </div>
+    <div className="container mx-auto px-4 py-8 flex flex-col items-center">
+      <div className="flex-start">
+        <div className="mb-8 flex flex-col items-start">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">🔥 Top Stories</h1>
+          <p className="text-gray-600">The most popular and trending stories right now</p>
+        </div>
 
-      <StoryList 
-        stories={items}
-        loading={loading}
-        hasMore={hasMore}
-        onLoadMore={loadMore}
-        variant="full"
-        showLoadMore={true}
-        loadMoreText="Load More Top Stories"
-        emptyMessage="No top stories available at the moment."
-        className="max-w-4xl"
-        showRanking={true}
-      />
+        <StoryList
+          stories={items}
+          loading={loading}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
+          variant="full"
+          showLoadMore={true}
+          loadMoreText="Load More Top Stories"
+          emptyMessage="No top stories available at the moment."
+          className="max-w-4xl"
+          showRanking={true}
+        />
+      </div>
     </div>
   );
 };

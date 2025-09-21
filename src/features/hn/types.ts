@@ -10,7 +10,6 @@ export interface HnItem {
 
 export type StoryType = 'top' | 'new'
 
-// Hook state interface exportálása
 export interface StoriesState {
   items: HnItem[]
   loading: boolean

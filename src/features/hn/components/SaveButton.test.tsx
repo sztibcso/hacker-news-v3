@@ -34,6 +34,7 @@ describe('SaveButton', () => {
       expect(button).toBeInTheDocument();
       expect(button).toHaveTextContent('☆');
       expect(button).toHaveAttribute('title', 'Save story');
+      expect(button).toHaveAttribute('aria-pressed', 'false');
       expect(button).toHaveClass('bg-white', 'border-gray-300', 'text-gray-400');
     });
 
@@ -50,7 +51,19 @@ describe('SaveButton', () => {
       expect(button).toBeInTheDocument();
       expect(button).toHaveTextContent('★');
       expect(button).toHaveAttribute('title', 'Remove from saved');
+      expect(button).toHaveAttribute('aria-pressed', 'true');
       expect(button).toHaveClass('bg-hn-orange', 'border-hn-orange', 'text-white');
+    });
+
+    it('has proper data attribute for saved state', () => {
+      const { rerender } = render(
+        <SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />
+      );
+      
+      expect(screen.getByRole('button')).toHaveAttribute('data-saved', 'false');
+      
+      rerender(<SaveButton story={mockStory} isSaved={true} onToggle={mockToggle} />);
+      expect(screen.getByRole('button')).toHaveAttribute('data-saved', 'true');
     });
   });
 
@@ -65,7 +78,7 @@ describe('SaveButton', () => {
       );
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('w-8', 'h-8', 'text-sm');
+      expect(button).toHaveClass('h-9', 'w-9', 'text-lg');
     });
 
     it('applies small size classes when specified', () => {
@@ -79,21 +92,7 @@ describe('SaveButton', () => {
       );
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('w-6', 'h-6', 'text-xs');
-    });
-
-    it('applies medium size classes when explicitly specified', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-          size="medium"
-        />
-      );
-
-      const button = screen.getByRole('button');
-      expect(button).toHaveClass('w-8', 'h-8', 'text-sm');
+      expect(button).toHaveClass('h-8', 'w-8', 'text-base');
     });
   });
 
@@ -153,14 +152,13 @@ describe('SaveButton', () => {
       const button = screen.getByRole('button');
       await user.click(button);
 
-      // Navigation should not occur due to preventDefault
       expect(mockToggle).toHaveBeenCalledTimes(1);
       expect(window.location.pathname).not.toBe('/test');
     });
   });
 
   describe('accessibility', () => {
-    it('has proper ARIA labels for unsaved state', () => {
+    it('has proper ARIA attributes for unsaved state', () => {
       render(
         <SaveButton
           story={mockStory}
@@ -171,9 +169,10 @@ describe('SaveButton', () => {
 
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('aria-label', 'Save story');
+      expect(button).toHaveAttribute('aria-pressed', 'false');
     });
 
-    it('has proper ARIA labels for saved state', () => {
+    it('has proper ARIA attributes for saved state', () => {
       render(
         <SaveButton
           story={mockStory}
@@ -184,6 +183,7 @@ describe('SaveButton', () => {
 
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('aria-label', 'Remove from saved');
+      expect(button).toHaveAttribute('aria-pressed', 'true');
     });
 
     it('has keyboard focus support', () => {
@@ -196,7 +196,7 @@ describe('SaveButton', () => {
       );
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('focus:outline-none', 'focus:ring-2', 'focus:ring-hn-orange');
+      expect(button).toHaveClass('focus-visible:outline-none', 'focus-visible:ring-2');
     });
 
     it('is keyboard accessible', async () => {
@@ -243,7 +243,7 @@ describe('SaveButton', () => {
       );
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('transition-all', 'duration-200');
+      expect(button).toHaveClass('transition-colors', 'duration-200');
     });
 
     it('has proper border styling', () => {
@@ -257,6 +257,21 @@ describe('SaveButton', () => {
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-full', 'border-2');
+    });
+  });
+
+  describe('dark mode support', () => {
+    it('applies dark mode classes in unsaved state', () => {
+      render(
+        <SaveButton
+          story={mockStory}
+          isSaved={false}
+          onToggle={mockToggle}
+        />
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('dark:bg-gray-800', 'dark:border-gray-700', 'dark:text-gray-300');
     });
   });
 

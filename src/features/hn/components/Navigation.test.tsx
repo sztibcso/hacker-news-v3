@@ -74,7 +74,7 @@ describe('Navigation', () => {
     const topTab = screen.getByRole('tab', { name: /top stories/i })
     const newTab = screen.getByRole('tab', { name: /new stories/i })
     
-    await user.tab() // Focus on first tab
+    await user.tab()
     expect(topTab).toHaveFocus()
     
     await user.keyboard('{ArrowRight}')

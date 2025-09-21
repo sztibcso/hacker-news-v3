@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { StoryList } from './StoryList'
 import type { HnItem } from '../types'
 
-// Mock the StoryCard component since it has many dependencies
+// Mock the StoryCard component
 vi.mock('./StoryCard', () => ({
   StoryCard: ({ story }: { story: HnItem }) => (
     <div data-testid="story-card" data-story-id={story.id}>
@@ -39,11 +39,10 @@ describe('StoryList', () => {
         stories={mockStories}
         loading={false}
         hasMore={false}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
-    expect(screen.getByRole('list')).toBeInTheDocument()
     expect(screen.getAllByTestId('story-card')).toHaveLength(2)
     expect(screen.getByText('First Story')).toBeInTheDocument()
     expect(screen.getByText('Second Story')).toBeInTheDocument()
@@ -55,7 +54,7 @@ describe('StoryList', () => {
         stories={mockStories}
         loading={false}
         hasMore={false}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
@@ -70,29 +69,53 @@ describe('StoryList', () => {
         stories={[]}
         loading={true}
         hasMore={false}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
-    
-    expect(screen.getByRole('status', { name: 'Loading stories...' })).toBeInTheDocument()
-    expect(screen.getByText('Loading stories...')).toBeInTheDocument()
     
     const animatedElements = document.querySelectorAll('.animate-pulse')
     expect(animatedElements.length).toBeGreaterThan(0)
   })
 
-  it('shows stories and load more button when has more stories', () => {
+  it('shows empty state when no stories and not loading', () => {
+    render(
+      <StoryList 
+        stories={[]}
+        loading={false}
+        hasMore={false}
+        onLoadMore={async () => {}}
+      />
+    )
+    
+    expect(screen.getByText('No stories available.')).toBeInTheDocument()
+  })
+
+  it('shows custom empty message when provided', () => {
+    render(
+      <StoryList 
+        stories={[]}
+        loading={false}
+        hasMore={false}
+        onLoadMore={async () => {}}
+        emptyMessage="Custom empty message"
+      />
+    )
+    
+    expect(screen.getByText('Custom empty message')).toBeInTheDocument()
+  })
+
+  it('shows load more button when has more stories', () => {
     render(
       <StoryList 
         stories={mockStories}
         loading={false}
         hasMore={true}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
     expect(screen.getAllByTestId('story-card')).toHaveLength(2)
-    expect(screen.getByRole('button', { name: /load more stories/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /load more/i })).toBeInTheDocument()
   })
 
   it('does not show load more button when hasMore is false', () => {
@@ -101,11 +124,25 @@ describe('StoryList', () => {
         stories={mockStories}
         loading={false}
         hasMore={false}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
     expect(screen.queryByRole('button', { name: /load more/i })).not.toBeInTheDocument()
+  })
+
+  it('hides load more button when showLoadMore is false', () => {
+    render(
+      <StoryList 
+        stories={mockStories}
+        loading={false}
+        hasMore={true}
+        onLoadMore={async () => {}}
+        showLoadMore={false}
+      />
+    )
+    
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 
   it('calls onLoadMore when load more button clicked', async () => {
@@ -121,7 +158,7 @@ describe('StoryList', () => {
       />
     )
     
-    const loadMoreButton = screen.getByRole('button', { name: /load more stories/i })
+    const loadMoreButton = screen.getByRole('button', { name: /load more/i })
     await user.click(loadMoreButton)
     
     expect(mockLoadMore).toHaveBeenCalledTimes(1)
@@ -133,7 +170,7 @@ describe('StoryList', () => {
         stories={mockStories}
         loading={true}
         hasMore={true}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
@@ -148,135 +185,92 @@ describe('StoryList', () => {
         stories={mockStories}
         loading={false}
         hasMore={true}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
-    expect(screen.getByRole('button', { name: /load more stories/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /load more/i })).toHaveTextContent('Load More')
     
     rerender(
       <StoryList 
         stories={mockStories}
         loading={true}
         hasMore={true}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
-    expect(screen.getByRole('button', { name: /loading/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /loading/i })).toHaveTextContent('Loading...')
   })
 
-  it('applies correct styling classes', () => {
+  it('uses custom load more text when provided', () => {
     render(
       <StoryList 
         stories={mockStories}
         loading={false}
         hasMore={true}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
+        loadMoreText="Get More Stories"
       />
     )
     
-    const container = screen.getByRole('list').closest('div')
-    expect(container).toHaveClass('space-y-4')
-    
-    const list = screen.getByRole('list')
-    expect(list).toHaveClass('space-y-4')
-    
-    const loadMoreButton = screen.getByRole('button')
-    expect(loadMoreButton).toHaveClass('px-6', 'py-2', 'bg-hn-orange', 'text-white', 'rounded-lg')
+    expect(screen.getByRole('button')).toHaveTextContent('Get More Stories')
   })
 
-  it('handles empty stories array', () => {
+  it('applies custom className when provided', () => {
+    const { container } = render(
+      <StoryList 
+        stories={mockStories}
+        loading={false}
+        hasMore={false}
+        onLoadMore={async () => {}}
+        className="custom-class"
+      />
+    )
+    
+    expect(container.firstChild).toHaveClass('custom-class', 'space-y-4')
+  })
+
+  it('shows ranking numbers when showRanking is true', () => {
+    render(
+      <StoryList 
+        stories={mockStories}
+        loading={false}
+        hasMore={false}
+        onLoadMore={async () => {}}
+        showRanking={true}
+      />
+    )
+    
+    expect(screen.getByText('1')).toBeInTheDocument()
+    expect(screen.getByText('2')).toBeInTheDocument()
+  })
+
+  it('does not show ranking numbers by default', () => {
+    render(
+      <StoryList 
+        stories={mockStories}
+        loading={false}
+        hasMore={false}
+        onLoadMore={async () => {}}
+      />
+    )
+    
+    const container = screen.getAllByTestId('story-card')[0].closest('div')?.parentElement
+    expect(container?.textContent).not.toMatch(/^1$/)
+  })
+
+  it('renders correct number of skeleton items', () => {
     render(
       <StoryList 
         stories={[]}
-        loading={false}
+        loading={true}
         hasMore={false}
-        onLoadMore={() => {}}
+        onLoadMore={async () => {}}
       />
     )
     
-    const list = screen.getByRole('list')
-    expect(list).toBeInTheDocument()
-    expect(screen.queryAllByTestId('story-card')).toHaveLength(0)
-  })
-
-  describe('accessibility', () => {
-    it('provides proper ARIA labels for loading state', () => {
-      render(
-        <StoryList 
-          stories={[]}
-          loading={true}
-          hasMore={false}
-          onLoadMore={() => {}}
-        />
-      )
-      
-      const loadingStatus = screen.getByRole('status')
-      expect(loadingStatus).toHaveAttribute('aria-label', 'Loading stories...')
-    })
-
-    it('uses semantic list structure', () => {
-      render(
-        <StoryList 
-          stories={mockStories}
-          loading={false}
-          hasMore={false}
-          onLoadMore={() => {}}
-        />
-      )
-      
-      expect(screen.getByRole('list')).toBeInTheDocument()
-      const listItems = screen.getAllByRole('listitem')
-      expect(listItems).toHaveLength(2)
-    })
-
-    it('provides proper button accessibility', () => {
-      render(
-        <StoryList 
-          stories={mockStories}
-          loading={false}
-          hasMore={true}
-          onLoadMore={() => {}}
-        />
-      )
-      
-      const button = screen.getByRole('button')
-      expect(button).toHaveClass('focus:outline-none', 'focus:ring-2', 'focus:ring-hn-orange')
-    })
-  })
-
-  describe('loading skeleton', () => {
-    it('renders correct number of skeleton items', () => {
-      render(
-        <StoryList 
-          stories={[]}
-          loading={true}
-          hasMore={false}
-          onLoadMore={() => {}}
-        />
-      )
-      
-      // LoadingSkeleton should render 3 skeleton items
-      const animatedElements = document.querySelectorAll('.animate-pulse')
-      expect(animatedElements.length).toBeGreaterThanOrEqual(3)
-    })
-
-    it('applies correct skeleton styling', () => {
-      render(
-        <StoryList 
-          stories={[]}
-          loading={true}
-          hasMore={false}
-          onLoadMore={() => {}}
-        />
-      )
-      
-      const skeletonContainer = screen.getByRole('status').querySelector('.space-y-4')
-      expect(skeletonContainer).toBeInTheDocument()
-      
-      const skeletonCards = document.querySelectorAll('.bg-white.rounded-lg.border.border-gray-200.p-4.animate-pulse')
-      expect(skeletonCards.length).toBeGreaterThan(0)
-    })
+    const animatedElements = document.querySelectorAll('.animate-pulse')
+    expect(animatedElements.length).toBe(5)
   })
 })

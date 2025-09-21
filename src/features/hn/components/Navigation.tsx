@@ -7,6 +7,11 @@ interface NavigationProps {
   loading: boolean
 }
 
+const STORY_TYPES: readonly StoryType[] = ['top', 'new'] as const
+
+const getTypeLabel = (type: StoryType): string => 
+  type === 'top' ? 'Top Stories' : 'New Stories'
+
 export function Navigation({ currentType, onTypeChange, loading }: NavigationProps) {
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>, type: StoryType) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -24,10 +29,10 @@ export function Navigation({ currentType, onTypeChange, loading }: NavigationPro
     <nav className="mb-6">
       <div 
         role="tablist" 
-        className="flex bg-gray-100 rounded-lg p-1 max-w-xs mx-auto sm:mx-0"
+        className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 max-w-xs mx-auto sm:mx-0"
         aria-label="Story categories"
       >
-        {(['top', 'new'] as const).map((type) => (
+        {STORY_TYPES.map((type) => (
           <button
             key={type}
             role="tab"
@@ -41,12 +46,12 @@ export function Navigation({ currentType, onTypeChange, loading }: NavigationPro
               focus:outline-none focus:ring-2 focus:ring-hn-orange focus:ring-offset-2
               disabled:opacity-50 disabled:cursor-not-allowed
               ${currentType === type 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm' 
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700/50'
               }
             `}
           >
-            {type === 'top' ? 'Top Stories' : 'New Stories'}
+            {getTypeLabel(type)}
           </button>
         ))}
       </div>

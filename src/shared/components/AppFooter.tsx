@@ -20,11 +20,10 @@ export function AppFooter({ onSecretButtonClick, className = '' }: AppFooterProp
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           
-          {/* Left Section - Secret Button */}
           <div className="flex justify-center lg:justify-start">
             <button
               onClick={onSecretButtonClick}
-              className="bg-red-600 hover:bg-red-700 text-black font-medium px-6 py-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-sm"
+              className="bg-red-600 hover:bg-red-700 text-black font-bold px-6 py-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-sm"
               type="button"
               aria-label="Secret button - do not click"
             >
@@ -32,16 +31,14 @@ export function AppFooter({ onSecretButtonClick, className = '' }: AppFooterProp
             </button>
           </div>
 
-          {/* Center Section - Made by */}
           <div className="text-center">
             <p className="text-lg font-semibold text-gray-900">
-              Made by <span className="text-hn-orange font-bold">Tibcsó</span>
+              Made by <span className="text-hn-orange font-bold text-xl italic">Tibcsó</span>
             </p>
           </div>
 
-          {/* Right Section - Navigation Links */}
           <nav className="flex justify-center lg:justify-end" role="navigation" aria-label="Footer navigation">
-            <ul className="flex flex-wrap justify-center gap-4">
+            <ul className="flex flex-col flex-wrap justify-center gap-4">
               {navLinks.map((link) => (
                 <li key={link.to}>
                   <Link

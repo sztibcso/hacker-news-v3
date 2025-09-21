@@ -28,7 +28,6 @@ export function HomePage() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-      {/* Left Column - News Stories (3/4) */}
       <div className="lg:col-span-3">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Latest News</h2>
@@ -59,7 +58,6 @@ export function HomePage() {
               <StoryCard key={story.id} story={story} variant="full" />
             ))}
 
-            {/* Load More Button */}
             <div className="text-center pt-6">
               <Link
                 to="/news"
@@ -72,7 +70,6 @@ export function HomePage() {
         )}
       </div>
 
-      {/* Right Column - Top Stories (1/4) */}
       <div className="lg:col-span-1">
         <div className="sticky top-8">
           <div className="flex items-center justify-between mb-6">
@@ -97,12 +94,10 @@ export function HomePage() {
             <div className="space-y-3">
               {previewTopStories.map((story, index) => (
                 <div key={story.id} className="relative">
-                  {/* Ranking number */}
                   <div className="absolute -left-2 -top-1 bg-hn-orange text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-10">
                     {index + 1}
                   </div>
 
-                  {/* Story title only */}
                   <div className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-md transition-shadow">
                     {story.url ? (
                       <a
@@ -119,13 +114,11 @@ export function HomePage() {
                       </h3>
                     )}
 
-                    {/* Minimal metadata */}
                     <div className="mt-2 text-xs text-gray-500">{story.score} pts</div>
                   </div>
                 </div>
               ))}
 
-              {/* Load More Button */}
               <div className="text-center pt-4">
                 <Link
                   to="/top"

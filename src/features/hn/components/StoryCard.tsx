@@ -71,7 +71,7 @@ export function StoryCard({ story, variant = 'full' }: StoryCardProps) {
     );
   }
 
-  // Full variant for main content
+  // Full variatn
   return (
     <article
       className="group bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 shadow-sm hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200 transform hover:-translate-y-0.5"
@@ -81,7 +81,7 @@ export function StoryCard({ story, variant = 'full' }: StoryCardProps) {
         <StoryVisual url={story.url} />
         
         <div className="flex-1 min-w-0">
-          {/* Category Badge */}
+          
           <div className="flex items-center gap-2 mb-2">
             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${domainInfo.color} text-gray-700 dark:text-gray-200 capitalize`}>
               {domainInfo.category}
@@ -93,7 +93,6 @@ export function StoryCard({ story, variant = 'full' }: StoryCardProps) {
             )}
           </div>
 
-          {/* Title */}
           {story.url ? (
             <a
               id={titleId}
@@ -110,7 +109,6 @@ export function StoryCard({ story, variant = 'full' }: StoryCardProps) {
             </h3>
           )}
 
-          {/* Metadata and Save Button */}
           <div className="flex items-center justify-between">
             <StoryMetadata 
               score={story.score}
@@ -124,7 +122,6 @@ export function StoryCard({ story, variant = 'full' }: StoryCardProps) {
             />
           </div>
 
-          {/* Score progress bar */}
           <div className="mt-3 bg-gray-100 dark:bg-gray-800 rounded-full h-1">
             <div 
               className="bg-gradient-to-r from-hn-orange to-orange-400 h-1 rounded-full transition-all duration-500"

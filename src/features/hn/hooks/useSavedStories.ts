@@ -3,7 +3,6 @@ import type { HnItem } from "../types";
 
 const STORAGE_KEY = "hn-saved-stories";
 
-// ---- Module-level state (shared) ----
 let savedStoriesRef: HnItem[] = loadFromStorage();
 const listeners = new Set<() => void>();
 
@@ -32,7 +31,6 @@ function emit() {
   for (const l of listeners) l();
 }
 
-// Single storage listener (module scope)
 let storageListenerAttached = false;
 function attachStorageListenerOnce() {
   if (storageListenerAttached || typeof window === "undefined") return;
@@ -45,7 +43,6 @@ function attachStorageListenerOnce() {
 }
 attachStorageListenerOnce();
 
-// ---- Public hook API ----
 export function useSavedStories() {
   const subscribe = useCallback((onStoreChange: () => void) => {
     listeners.add(onStoreChange);
@@ -62,15 +59,15 @@ export function useSavedStories() {
 
   const saveStory = useCallback((story: HnItem) => {
     if (!story || typeof story.id !== "number") return;
-    if (savedStoriesRef.some((s) => s.id === story.id)) return; // no dupes
-    savedStoriesRef = [story, ...savedStoriesRef]; // newest first
+    if (savedStoriesRef.some((s) => s.id === story.id)) return;
+    savedStoriesRef = [story, ...savedStoriesRef];
     persist();
     emit();
   }, []);
 
   const unsaveStory = useCallback((id: number) => {
     const next = savedStoriesRef.filter((s) => s.id !== id);
-    if (next.length === savedStoriesRef.length) return; // nothing to remove
+    if (next.length === savedStoriesRef.length) return;
     savedStoriesRef = next;
     persist();
     emit();

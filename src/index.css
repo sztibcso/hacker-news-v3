@@ -1,32 +1,19 @@
 @import "tailwindcss";
-
-@theme {
-  --color-hn-orange: #ff6600;
-}
-
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-body {
-  font-family: Inter, system-ui, sans-serif;
-}
+@theme { --color-hn-orange: #ff6600; }
 
-a, button, [role="button"] {
-  color: inherit;
-}
+:root { color-scheme: light dark; }
+html, body, #root { height: 100%; }
+body { font-family: Inter, system-ui, sans-serif; }
 
-a:visited {
-  color: inherit;
-}
-
-a:active,
-button:active,
-[role="button"]:active {
+a, button, [role="button"] { color: inherit; }
+a:visited { color: inherit; }
+a:active, button:active, [role="button"]:active {
   color: inherit !important;
   -webkit-text-fill-color: inherit !important;
   opacity: 1 !important;
 }
+svg { fill: currentColor; stroke: currentColor; }
 
-svg {
-  fill: currentColor;
-  stroke: currentColor;
-}
+html.dark body { background:#0b1220; color:#f8fafc; }
