@@ -15,6 +15,32 @@ interface StoryListProps {
   showRanking?: boolean;
 }
 
+const SKELETON_COUNT = 5;
+
+function LoadingSkeleton() {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-5 animate-pulse">
+      <div className="flex gap-4">
+        <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div className="flex-1">
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded mb-3"></div>
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="text-center py-12">
+      <div className="text-6xl mb-4">📰</div>
+      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{message}</h3>
+    </div>
+  );
+}
+
 export const StoryList: React.FC<StoryListProps> = ({
   stories,
   loading,
@@ -30,31 +56,15 @@ export const StoryList: React.FC<StoryListProps> = ({
   if (loading && stories.length === 0) {
     return (
       <div className={`space-y-4 ${className}`}>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="bg-white rounded-xl p-5 animate-pulse">
-            <div className="flex gap-4">
-              <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
-              <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                <div className="h-6 bg-gray-300 rounded mb-3"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            </div>
-          </div>
+        {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+          <LoadingSkeleton key={i} />
         ))}
       </div>
     );
   }
 
   if (stories.length === 0 && !loading) {
-    return (
-      <div className={`text-center py-12 ${className}`}>
-        <div className="text-6xl mb-4">📰</div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">
-          {emptyMessage}
-        </h3>
-      </div>
-    );
+    return <EmptyState message={emptyMessage} />;
   }
 
   return (
@@ -66,19 +76,16 @@ export const StoryList: React.FC<StoryListProps> = ({
               {index + 1}
             </div>
           )}
-          <StoryCard 
-            story={story} 
-            variant={variant}
-          />
+          <StoryCard story={story} variant={variant} />
         </div>
       ))}
-      
+
       {showLoadMore && hasMore && (
         <div className="text-center py-6">
           <button
             onClick={onLoadMore}
             disabled={loading}
-            className="px-6 py-3 bg-hn-orange text-white font-semibold rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-3 bg-hn-orange text-white font-semibold rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-hn-orange focus:ring-offset-2"
           >
             {loading ? 'Loading...' : loadMoreText}
           </button>

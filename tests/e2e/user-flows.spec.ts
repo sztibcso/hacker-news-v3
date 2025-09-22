@@ -1,26 +1,31 @@
 import { test, expect } from '@playwright/test'
 
-test('complete user journey - top to new stories with load more', async ({ page }) => {
+test('complete user journey - top to news with load more', async ({ page }) => {
   await page.goto('/')
-  
-  // Initial load
   await expect(page.getByText('Hacker News')).toBeVisible()
+  
   await expect(page.locator('article').first()).toBeVisible({ timeout: 10000 })
-  
-  // Count initial stories
-  const initialStories = await page.locator('article').count()
-  expect(initialStories).toBeGreaterThan(0)
-  
-  // Switch to new stories
-  await page.click('text=New Stories')
-  await expect(page.locator('[aria-selected="true"]', { hasText: 'New Stories' })).toBeVisible()
-  
-  // Load more if available
-  const loadMoreButton = page.locator('text=Load More Stories')
-  if (await loadMoreButton.isVisible()) {
-    const storiesBeforeLoadMore = await page.locator('article').count()
-    await loadMoreButton.click()
-    
-    await expect(page.locator('article').nth(storiesBeforeLoadMore)).toBeVisible({ timeout: 10000 })
+  const initialTopCount = await page.locator('article').count()
+  expect(initialTopCount).toBeGreaterThan(0)
+
+  const mainNav = page.getByLabel('Main navigation')
+  const newsLink = mainNav.getByRole('link', { name: 'News' })
+  await newsLink.click()
+  await expect(page).toHaveURL(/\/news$/)
+
+  const newsArticles = page.locator('article')
+  await expect(newsArticles.first()).toBeVisible({ timeout: 10000 })
+  const before = await newsArticles.count()
+
+  const loadMoreBtn = page.getByRole('button', { name: /load more/i })
+  if (await loadMoreBtn.count()) {
+    await loadMoreBtn.click()
+    await expect(newsArticles.nth(before)).toBeVisible({ timeout: 10000 })
+  } else {
+    const loadMoreLink = page.locator('a', { hasText: /load more/i })
+    if (await loadMoreLink.count()) {
+      await loadMoreLink.click()
+      await expect(newsArticles.nth(before)).toBeVisible({ timeout: 10000 })
+    }
   }
 })

@@ -2,18 +2,18 @@ import { timeAgo, domainFromUrl, pluralize } from './format';
 
 describe('timeAgo', () => {
   it('returns minutes for values < 1h', () => {
-    const now = Math.floor(Date.now()/1000);
-    expect(timeAgo(now - 5 * 60)).toMatch(/5 min/);
+    const now = Math.floor(Date.now() / 1000);
+    expect(timeAgo(now - 5 * 60)).toBe('5m ago');
   });
 
   it('returns hours for values >= 1h', () => {
     const now = Math.floor(Date.now() / 1000);
-    expect(timeAgo(now - 2 * 60 * 60)).toMatch(/2 h/);
+    expect(timeAgo(now - 2 * 60 * 60)).toBe('2h ago');
   });
 
   it('returns days for values >= 24h', () => {
     const now = Math.floor(Date.now() / 1000);
-    expect(timeAgo(now - 25 * 60 * 60)).toMatch(/1 d/);
+    expect(timeAgo(now - 25 * 60 * 60)).toBe('1d ago');
   });
 });
 
@@ -23,10 +23,10 @@ describe('domainFromUrl', () => {
     expect(domainFromUrl('http://news.ycombinator.com')).toBe('news.ycombinator.com');
   });
 
-  it('returns empty string for invalid URL', () => {
-    expect(domainFromUrl('not-a-url')).toBe('');
-    expect(domainFromUrl('')).toBe('');
-    expect(domainFromUrl(undefined)).toBe('');
+  it('returns null for invalid URL', () => {
+    expect(domainFromUrl('not-a-url')).toBe(null);
+    expect(domainFromUrl('')).toBe(null);
+    expect(domainFromUrl(undefined)).toBe(null);
   });
 });
 

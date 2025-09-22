@@ -2,24 +2,18 @@ import { test, expect } from '@playwright/test'
 
 test('application loads and displays stories', async ({ page }) => {
   await page.goto('/')
-  
-  await expect(page).toHaveTitle(/Vite/)
+  await expect(page).toHaveTitle(/Hacker News/i)
   await expect(page.getByText('Hacker News')).toBeVisible()
-  await expect(page.getByText('Top Stories')).toBeVisible()
-  
-  // Várjuk meg hogy betöltődjenek a story-k
   await expect(page.locator('article').first()).toBeVisible({ timeout: 10000 })
 })
 
-test('can switch between top and new stories', async ({ page }) => {
+test('can navigate to News and see stories', async ({ page }) => {
   await page.goto('/')
-  
-  // Várjuk meg az első story-kat
-  await expect(page.locator('article').first()).toBeVisible()
-  
-  // Váltás new story-kra
-  await page.click('text=New Stories')
-  
-  // Ellenőrizzük hogy a tab aktív
-  await expect(page.locator('[aria-selected="true"]', { hasText: 'New Stories' })).toBeVisible()
+  const mainNav = page.getByLabel('Main navigation')
+  await mainNav.getByRole('link', { name: 'News' }).click()
+  await expect(page).toHaveURL(/\/news$/)
+  const articles = page.locator('article')
+  await expect(articles.first()).toBeVisible({ timeout: 10000 })
+  const count = await articles.count()
+  expect(count).toBeGreaterThan(0)
 })

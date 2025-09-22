@@ -1,28 +1,37 @@
-# Hacker News V3.0
+# Hacker News Reader
 
-A modern, redesigned Hacker News web application built with React, TypeScript, and Tailwind CSS.
+A modern, redesigned Hacker News client built with React, TypeScript, and Tailwind CSS. This project offers an enhanced user experience with improved accessibility, clean design, and dark mode support.
 
-## 🚀 Features
+## Features
 
-- **Top & New Stories** - Switch between top-rated and newest stories
-- **Infinite Loading** - Load more stories with smooth UX
-- **Responsive Design** - Works on all devices
-- **Accessibility** - Full keyboard navigation and screen reader support
-- **Fast Performance** - Optimized API calls with concurrency limiting
-- **Error Handling** - Graceful error states with retry functionality
+- **Real-time Story Feed**: Browse top and new stories from Hacker News
+- **Saved Stories**: Bookmark and manage your favorite articles locally
+- **Dark Mode Support**: Automatically adapts to your browser's theme preference
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Accessibility**: Built with WCAG guidelines and keyboard navigation support
+- **TypeScript**: Fully typed for better developer experience and fewer runtime errors
 
-## 🛠 Tech Stack
+## Tech Stack
 
-- **Frontend**: React 18, TypeScript, Tailwind CSS
+- **Frontend**: React 19, TypeScript, React Router
+- **Styling**: Tailwind CSS v4
+- **State Management**: React hooks and Context API
+- **Data Fetching**: Native fetch with the official Hacker News API
+- **Testing**: Vitest, React Testing Library, Playwright
 - **Build Tool**: Vite
-- **Testing**: Vitest (unit), React Testing Library, Playwright (E2E)
-- **Mocking**: MSW (Mock Service Worker)
-- **Package Manager**: pnpm
+- **Code Quality**: ESLint, Prettier, Husky
 
-## 📦 Installation
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
 
 ```bash
-# Clone repository
+# Clone the repository
 git clone <repository-url>
 cd hacker-news-v3
 
@@ -33,113 +42,118 @@ pnpm install
 pnpm dev
 ```
 
-## 🧪 Testing
+The application will be available at `http://localhost:5173`
 
-```bash
-# Run all unit tests
-pnpm test
+### Available Scripts
 
-# Run tests in watch mode
-pnpm test:watch
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm test` - Run unit and integration tests
+- `pnpm test:ui` - Run tests with UI
+- `pnpm test:e2e` - Run end-to-end tests
+- `pnpm lint` - Lint code
+- `pnpm format` - Format code with Prettier
 
-# Generate coverage report
-pnpm test:coverage
+## Dark Mode
 
-# Run E2E tests
-pnpm test:e2e
-```
+The application automatically detects and respects your browser's theme preference. To change between light and dark mode:
 
-## 🏗 Architecture
+1. Open your browser settings
+2. Navigate to Appearance or Theme settings
+3. Select your preferred theme (Light/Dark/System)
+4. Refresh the Hacker News Reader page
+
+The interface will automatically adapt to match your browser's theme.
+
+## Project Structure
 
 ```
 src/
-├── features/hn/          # Hacker News feature module
-│   ├── components/       # UI components
-│   ├── hooks/           # Custom React hooks
-│   ├── pages/           # Page components
-│   └── types.ts         # TypeScript interfaces
-├── services/            # API layer
-├── shared/              # Reusable utilities
-└── test/               # Test configuration
+├── features/           # Feature-based modules
+│   └── hn/            # Hacker News feature
+│       ├── components/ # Feature-specific components
+│       ├── hooks/      # Custom hooks
+│       ├── pages/      # Page components
+│       └── types.ts    # TypeScript types
+├── services/          # API and data layer
+├── shared/            # Shared components and utilities
+│   ├── components/    # Reusable UI components
+│   ├── contexts/      # React contexts
+│   ├── icons/         # Icon components
+│   └── utils/         # Utility functions
+└── test/              # Test configuration and setup
 ```
 
-## 🔧 Key Design Decisions
+## Test Coverage
 
-### API Strategy
-- **Batch fetching** of story details to minimize API calls
-- **Concurrency limiting** (8 parallel requests) to avoid overwhelming the API
-- **AbortController** for proper cleanup on route changes
+The project maintains comprehensive test coverage to ensure reliability and catch regressions early:
 
-### State Management
-- React hooks for local state management
-- Custom `useStories` hook for data fetching logic
-- No external state library needed for this scope
+| Category | Statements | Branches | Functions | Lines |
+|----------|-----------|----------|-----------|-------|
+| Overall | 72.79% | 88.37% | 82.08% | 72.79% |
+| Components | 96.9% | 94.44% | 100% | 96.9% |
+| Pages | 98.98% | 92.3% | 73.33% | 98.98% |
+| Services | 95.23% | 78.57% | 100% | 95.23% |
 
-### UI/UX Decisions
-- **Progressive loading** with skeleton states
-- **Load more** button instead of infinite scroll for better UX control
-- **Error boundaries** with retry functionality
-- **Focus management** for accessibility
+Testing is a core part of the development workflow. The test suite includes:
+- Unit tests for components and utilities
+- Integration tests for features
+- End-to-end tests for critical user flows
+- Accessibility testing
 
-### Testing Strategy
-- **Unit tests**: 84%+ coverage on business logic
-- **Integration tests**: Component + hook interactions
-- **E2E tests**: Critical user journeys
-- **MSW mocking**: Reliable API simulation
+## Future Development Opportunities
 
-## 🌐 Assumptions Made
+### Backend Optimization
 
-1. **API Reliability**: HackerNews API occasionally returns null items - handled gracefully
-2. **Performance**: 20 items per page provides good balance of performance vs UX
-3. **Browser Support**: Modern browsers with ES2020 support
-4. **Accessibility**: WCAG 2.1 AA compliance targeted
-5. **Mobile First**: Responsive design prioritizes mobile experience
+Currently, the application communicates directly with the Hacker News API, which requires multiple requests to fetch story details. This approach has some limitations:
 
-## 🚀 Production Deployment
+- **Multiple API calls**: Each story requires a separate request
+- **Rate limiting**: Heavy usage may hit API rate limits
+- **Performance**: Initial load times can be affected by sequential requests
 
-```bash
-# Build for production
-pnpm build
+**Proposed solution**: Implement an intermediate backend service that:
+- Aggregates story data in a single response
+- Caches frequently accessed stories
+- Implements pagination more efficiently
+- Provides additional features like search and filtering
 
-# Preview production build
-pnpm preview
-```
+This optimization would significantly improve performance and user experience, especially on slower connections.
 
-## 📈 Performance Optimizations
+### Other Enhancements
 
-- **Batch API requests** with concurrency control
-- **Skeleton loading states** prevent layout shift
-- **Memoized components** for expensive renders
-- **Efficient re-renders** with proper dependency arrays
+- **Manual Theme Toggle**: Add a dedicated theme switcher in the UI
+- **Story Comments**: Display and navigate comment threads
+- **Advanced Filtering**: Filter by score, time, or domain
+- **Offline Support**: PWA capabilities for offline reading
+- **User Profiles**: View user submissions and activity
 
-## 🧭 Future Enhancements
+## Contributing
 
-- **Virtual scrolling** for very long lists
-- **Service Worker** for offline support
-- **Story caching** with timestamp invalidation
-- **Dark mode** theme support
-- **Keyboard shortcuts** for power users
+Contributions are welcome! Please follow these guidelines:
 
-## 📊 Test Coverage
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Current test coverage: **84.29%**
+Please ensure:
+- All tests pass (`pnpm test`)
+- Code is properly formatted (`pnpm format`)
+- No linting errors (`pnpm lint`)
+- Test coverage is maintained or improved
 
-- **Statements**: 84.29%
-- **Branches**: 80%
-- **Functions**: 91.66%
-- **Lines**: 84.29%
+## License
 
-## 🏆 Project Goals Achieved
+This project is open source and available under the MIT License.
 
-✅ **Top/New story switching** with smooth transitions  
-✅ **Pagination** via load more functionality  
-✅ **Clean code** with proper separation of concerns  
-✅ **DRY principles** with reusable components  
-✅ **TDD approach** with comprehensive test suite  
-✅ **Accessibility** with ARIA support and keyboard navigation  
-✅ **Responsive design** for all screen sizes  
-✅ **Professional documentation** with clear assumptions  
+## Acknowledgments
 
-## 📄 License
+- [Hacker News API](https://github.com/HackerNews/API) for providing the data
+- The Hacker News community for creating valuable content
+- All contributors who have helped improve this project
 
-MIT License - see LICENSE file for details.
+---
+
+Made by Tibcsó

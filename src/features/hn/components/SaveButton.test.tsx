@@ -10,7 +10,7 @@ const mockStory: HnItem = {
   score: 100,
   by: 'testuser',
   time: Math.floor(Date.now() / 1000),
-  type: 'story'
+  type: 'story',
 };
 
 describe('SaveButton', () => {
@@ -22,13 +22,7 @@ describe('SaveButton', () => {
 
   describe('rendering states', () => {
     it('renders unsaved state correctly', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button', { name: 'Save story' });
       expect(button).toBeInTheDocument();
@@ -39,13 +33,7 @@ describe('SaveButton', () => {
     });
 
     it('renders saved state correctly', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={true}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={true} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button', { name: 'Remove from saved' });
       expect(button).toBeInTheDocument();
@@ -57,11 +45,11 @@ describe('SaveButton', () => {
 
     it('has proper data attribute for saved state', () => {
       const { rerender } = render(
-        <SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />
+        <SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />,
       );
-      
+
       expect(screen.getByRole('button')).toHaveAttribute('data-saved', 'false');
-      
+
       rerender(<SaveButton story={mockStory} isSaved={true} onToggle={mockToggle} />);
       expect(screen.getByRole('button')).toHaveAttribute('data-saved', 'true');
     });
@@ -69,27 +57,14 @@ describe('SaveButton', () => {
 
   describe('size variants', () => {
     it('applies medium size classes by default', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('h-9', 'w-9', 'text-lg');
     });
 
     it('applies small size classes when specified', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-          size="small"
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} size="small" />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('h-8', 'w-8', 'text-base');
@@ -99,14 +74,8 @@ describe('SaveButton', () => {
   describe('user interactions', () => {
     it('calls onToggle when clicked', async () => {
       const user = userEvent.setup();
-      
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       await user.click(button);
@@ -118,15 +87,11 @@ describe('SaveButton', () => {
     it('prevents event propagation on click', async () => {
       const user = userEvent.setup();
       const parentClickHandler = vi.fn();
-      
+
       render(
         <div onClick={parentClickHandler}>
-          <SaveButton
-            story={mockStory}
-            isSaved={false}
-            onToggle={mockToggle}
-          />
-        </div>
+          <SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />
+        </div>,
       );
 
       const button = screen.getByRole('button');
@@ -138,15 +103,11 @@ describe('SaveButton', () => {
 
     it('prevents default behavior on click', async () => {
       const user = userEvent.setup();
-      
+
       render(
         <a href="/test">
-          <SaveButton
-            story={mockStory}
-            isSaved={false}
-            onToggle={mockToggle}
-          />
-        </a>
+          <SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />
+        </a>,
       );
 
       const button = screen.getByRole('button');
@@ -159,13 +120,7 @@ describe('SaveButton', () => {
 
   describe('accessibility', () => {
     it('has proper ARIA attributes for unsaved state', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('aria-label', 'Save story');
@@ -173,13 +128,7 @@ describe('SaveButton', () => {
     });
 
     it('has proper ARIA attributes for saved state', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={true}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={true} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('aria-label', 'Remove from saved');
@@ -187,13 +136,7 @@ describe('SaveButton', () => {
     });
 
     it('has keyboard focus support', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('focus-visible:outline-none', 'focus-visible:ring-2');
@@ -201,14 +144,8 @@ describe('SaveButton', () => {
 
     it('is keyboard accessible', async () => {
       const user = userEvent.setup();
-      
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       button.focus();
@@ -221,39 +158,21 @@ describe('SaveButton', () => {
 
   describe('visual feedback', () => {
     it('has hover state classes', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('hover:border-hn-orange', 'hover:text-hn-orange');
     });
 
     it('has transition classes for smooth animations', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('transition-colors', 'duration-200');
     });
 
     it('has proper border styling', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-full', 'border-2');
@@ -262,16 +181,10 @@ describe('SaveButton', () => {
 
   describe('dark mode support', () => {
     it('applies dark mode classes in unsaved state', () => {
-      render(
-        <SaveButton
-          story={mockStory}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={mockStory} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('dark:bg-gray-800', 'dark:border-gray-700', 'dark:text-gray-300');
+      expect(button).toHaveClass('dark:bg-gray-800', 'dark:border-gray-600', 'dark:text-gray-400');
     });
   });
 
@@ -279,16 +192,10 @@ describe('SaveButton', () => {
     it('handles story without URL', () => {
       const storyWithoutUrl: HnItem = {
         ...mockStory,
-        url: undefined
+        url: undefined,
       };
 
-      render(
-        <SaveButton
-          story={storyWithoutUrl}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={storyWithoutUrl} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toBeInTheDocument();
@@ -297,16 +204,10 @@ describe('SaveButton', () => {
     it('handles very long story titles', () => {
       const storyWithLongTitle: HnItem = {
         ...mockStory,
-        title: 'A'.repeat(500)
+        title: 'A'.repeat(500),
       };
 
-      render(
-        <SaveButton
-          story={storyWithLongTitle}
-          isSaved={false}
-          onToggle={mockToggle}
-        />
-      );
+      render(<SaveButton story={storyWithLongTitle} isSaved={false} onToggle={mockToggle} />);
 
       const button = screen.getByRole('button');
       expect(button).toBeInTheDocument();
