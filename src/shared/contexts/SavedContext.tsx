@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 
 export type SavedStory = {
   id: number;
@@ -20,66 +20,70 @@ type SavedContextType = {
   clear: () => void;
 };
 
-const STORAGE_KEY = "hn-saved-v1";
-const SavedContext = createContext<SavedContextType | undefined>(undefined);
+const SavedContext = createContext<SavedContextType | null>(null);
 
-function readFromStorage(): SavedMap {
-  if (typeof window === "undefined") return {};
+const STORAGE_KEY = 'hn_saved_v1';
+
+function loadFromStorage(): SavedMap {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEY) : null;
     if (!raw) return {};
     const parsed = JSON.parse(raw) as SavedMap;
-    return typeof parsed === "object" && parsed ? parsed : {};
+    if (parsed && typeof parsed === 'object') return parsed;
+    return {};
   } catch {
     return {};
   }
 }
 
-function writeToStorage(state: SavedMap) {
+function saveToStorage(map: SavedMap) {
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {}
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+    }
+  } catch {
+    return;
+  }
 }
 
-export const SavedProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [saved, setSaved] = useState<SavedMap>(() => readFromStorage());
-
-  useEffect(() => writeToStorage(saved), [saved]);
+export function SavedProvider({ children }: { children: React.ReactNode }) {
+  const [saved, setSaved] = useState<SavedMap>(() => loadFromStorage());
 
   useEffect(() => {
-    const handler = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) setSaved(readFromStorage());
-    };
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
-  }, []);
+    saveToStorage(saved);
+  }, [saved]);
 
-  const isSaved = (id: number) => Boolean(saved[id]);
+  const isSaved = useCallback((id: number) => !!saved[id], [saved]);
 
-  const toggleSave = (story: SavedStory) =>
+  const toggleSave = useCallback((story: SavedStory) => {
     setSaved((prev) => {
       const next = { ...prev };
-      if (next[story.id]) delete next[story.id];
-      else next[story.id] = story;
+      if (next[story.id]) {
+        delete next[story.id];
+      } else {
+        next[story.id] = story;
+      }
       return next;
     });
+  }, []);
 
-  const remove = (id: number) =>
+  const remove = useCallback((id: number) => {
     setSaved((prev) => {
+      if (!prev[id]) return prev;
       const next = { ...prev };
       delete next[id];
       return next;
     });
+  }, []);
 
-  const clear = () => setSaved({});
+  const clear = useCallback(() => {
+    setSaved({});
+  }, []);
 
-  const value = useMemo(() => ({ saved, isSaved, toggleSave, remove, clear }), [saved]);
+  const value = useMemo(
+    () => ({ saved, isSaved, toggleSave, remove, clear }),
+    [saved, isSaved, toggleSave, remove, clear],
+  );
 
   return <SavedContext.Provider value={value}>{children}</SavedContext.Provider>;
-};
-
-export function useSaved() {
-  const ctx = useContext(SavedContext);
-  if (!ctx) throw new Error("useSaved must be used within SavedProvider");
-  return ctx;
 }
