@@ -154,6 +154,14 @@ This project is open source and available under the MIT License.
 - The Hacker News community for creating valuable content
 - All contributors who have helped improve this project
 
+## Assumptions
+
+- Users have modern browsers with ES6+ support
+- The Hacker News API remains available and stable
+- Users have JavaScript enabled
+- Internet connection is available for API calls
+
+
 ---
 
 Made by Tibcsó
