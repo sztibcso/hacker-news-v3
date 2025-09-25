@@ -7,6 +7,7 @@ import { SavedPage } from './features/hn/pages/SavedPage';
 import { SecretPage } from './features/hn/pages/SecretPage';
 import { ErrorBoundary } from './shared/components/ErrorBoundary';
 import { SavedProvider } from './shared/contexts/SavedContext';
+import { CommentsPage } from './features/hn/pages/CommentsPage';
 
 function AppRoutes() {
   const navigate = useNavigate();
@@ -46,6 +47,15 @@ function AppRoutes() {
         element={
           <PageLayout onNavigateToSecret={handleNavigateToSecret}>
             <SavedPage />
+          </PageLayout>
+        }
+      />
+
+      <Route
+        path="/story/:storyId/comments"
+        element={
+          <PageLayout onNavigateToSecret={handleNavigateToSecret}>
+            <CommentsPage />
           </PageLayout>
         }
       />
